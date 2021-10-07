@@ -1,0 +1,29 @@
+{
+  "name": "project-client",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Projects client for the iTwin platform",
+  "scripts": {
+    "build": "pnpm run build --filter ./client/",
+    "lint": "pnpm run lint --filter ./client/",
+    "test": "pnpm run test --filter ./client/",
+    "cover": "pnpm run cover --filter ./client/",
+    "pack": "pnpm run pack --filter ./client/"
+  },
+  "keywords": [
+    "Bentley",
+    "Authorization"
+  ],
+  "author": {
+    "name": "Bentley Systems, Inc.",
+    "url": "http://www.bentley.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iTwin/projects-client"
+  },
+  "peerDependencies": {},
+  "devDependencies": {},
+  "dependencies": {}
+}
