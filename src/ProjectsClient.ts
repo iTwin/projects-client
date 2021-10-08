@@ -6,16 +6,22 @@
  * @module ProjectsClient
  */
 import { AccessToken } from "@itwin/core-bentley";
-import { Client, request, RequestOptions } from "@bentley/itwin-client";
+import { request, RequestOptions } from "@bentley/itwin-client";
 import { Project, ProjectsAccess as ProjectsAccess, ProjectsQueryArg as ProjectsQueryArg } from "./ProjectsAccessProps";
 
 /** Client API to access the project services.
  * @beta
  */
-export class ProjectsAccessClient extends Client implements ProjectsAccess {
+export class ProjectsAccessClient implements ProjectsAccess {
+  private _baseUrl: string = "https://api.bentley.com/projects/";
+
   public constructor() {
-    super();
-    this.baseUrl = "https://api.bentley.com/projects";
+    const urlPrefix = process.env.IMJS_URL_PREFIX;
+    if (urlPrefix) {
+      const baseUrl = new URL(this._baseUrl);
+      baseUrl.hostname = urlPrefix + baseUrl.hostname;
+      this._baseUrl = baseUrl.href;
+    }
   }
 
   /** Get projects accessible to the user
@@ -34,7 +40,7 @@ export class ProjectsAccessClient extends Client implements ProjectsAccess {
    */
   private async getByQuery(accessToken: AccessToken, queryArg?: ProjectsQueryArg): Promise<Project[]> {
     const requestOptions: RequestOptions = this.getRequestOptions(accessToken);
-    let url = await this.getUrl();
+    let url = this._baseUrl;
     if (queryArg)
       url = url + this.getQueryString(queryArg);
 
