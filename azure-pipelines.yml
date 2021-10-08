@@ -7,17 +7,87 @@ pr:
     include:
       - main
 
-pool:
-  vmImage: ubuntu-latest
-steps:
-- script: npm install
-  displayName: 'Install dependencies'
+resources:
+  repositories:
+    - repository: build-pipeline-scripts
+      type: git
+      ref: master
+      name: iModelTechnologies/imodeljs-build-pipeline-scripts
 
-- script: npm run build
-  displayName: 'Build'
+stages:
+- stage: Build
+  displayName: Build
+  jobs:
+    - job: BuildPackages
+      strategy:
+        matrix:
+          linux:
+            imageName: 'ubuntu-latest'
+          mac:
+            imageName: 'macos-latest'
+          windows:
+            imageName: 'windows-latest'
+      pool:
+        vmImage: $(imageName)
+      steps:
+      - script: npm install
+        displayName: 'Install dependencies'
 
-- script: npm run lint
-  displayName: 'Lint'
+      - script: npm run build
+        displayName: 'Build'
 
-- script: npm pack
-  displayName: 'Pack'
+      - script: npm run lint
+        displayName: 'Lint'
+
+      - script: npm pack
+        displayName: 'Pack'
+
+      # publish artifact
+      - bash: |
+          projectsClientVersion=$(node -p "require('./package.json').version")
+          projectsClientName=$(node -p "require('./package.json').name")
+          checkVer() {
+            localVer=$1
+            name=$2
+            remoteVer=$(npm view $name version)
+            if [ -z "$remoteVer" ]; then
+              remoteVer=0.0.0
+            fi
+            olderVer=$(printf '%s\n' "$localVer" "$remoteVer" | sort -V | head -n1)
+            if [ "$localVer" != "$remoteVer" ] && [ "$remoteVer" = "$olderVer" ]; then
+              echo true
+            else
+              echo false
+            fi
+          }
+          updateClient=$(checkVer $projectsClientVersion $projectsClientName)
+          if [ "$updateClient" = "true" ]; then
+            echo "package publishing conditions are met."
+            shouldPublish=true
+          else
+            echo "package publishing conditions not met."
+            shouldPublish=false
+          fi
+          echo "##vso[task.setvariable variable=shouldPublish;isOutput=true]$shouldPublish"
+          echo "##vso[task.setvariable variable=projectsClientVersion;isOutput=true]$projectsClientVersion"
+          echo "##vso[task.setvariable variable=projectsClientName;isOutput=true]$projectsClientName"
+        displayName: 'Store Build Info'
+        name: info
+        condition: and(succeeded(), eq(variables.try_publish, true), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Agent.OS'], 'Linux'))
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.SourcesDirectory)/itwin-projects-client-$(info.projectsClientVersion).tgz'
+          artifactName: ProjectsClient
+        displayName: 'Publish Projects client'
+        condition: and(succeeded(), eq(variables['info.shouldPublish'], 'true'))
+
+- stage: Publish
+  displayName: Publish
+  condition: and(succeeded(), eq(dependencies.Build.outputs['BuildPackages.linux.info.shouldPublish'], 'true'))
+  dependsOn: Build
+
+  jobs:
+    - template: templates/npmjs-publish-deployment.yaml@build-pipeline-scripts
+      parameters:
+        path: '*.tgz'
+        artifactName: ProjectsClient
