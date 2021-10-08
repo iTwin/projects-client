@@ -8,5 +8,8 @@ package-lock.json
 # build output
 /**/lib
 
+# pack output
+*.tgz
+
 # Mac specfic
 .DS_Store
