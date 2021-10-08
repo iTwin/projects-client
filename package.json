@@ -1,7 +1,6 @@
 {
-  "name": "project-client",
-  "private": true,
-  "version": "1.0.0",
+  "name": "@itwin/projects-client",
+  "version": "0.0.0",
   "description": "Projects client for the iTwin platform",
   "scripts": {
     "compile": "npm run -s build",
