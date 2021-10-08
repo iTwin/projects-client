@@ -7,37 +7,17 @@ pr:
     include:
       - main
 
-resources:
-  repositories:
-    - repository: build-pipeline-scripts
-      type: git
-      ref: master
-      name: iModelTechnologies/imodeljs-build-pipeline-scripts
+  pool:
+    vmImage: ubuntu-latest
+  steps:
+  - script: npm install
+    displayName: 'Install dependencies'
 
-stages:
-- stage: Build
-  displayName: Build
-  jobs:
-    - job: BuildPackages
-      strategy:
-        matrix:
-          linux:
-            imageName: 'ubuntu-latest'
-          mac:
-            imageName: 'macos-latest'
-          windows:
-            imageName: 'windows-latest'
-      pool:
-        vmImage: $(imageName)
-      steps:
-      - script: npm install
-        displayName: 'Install dependencies'
+  - script: npm run build
+    displayName: 'Build'
 
-      - script: npm run build
-        displayName: 'Build'
+  - script: npm run lint
+    displayName: 'Lint'
 
-      - script: npm run lint
-        displayName: 'Lint'
-
-      - script: npm pack
-        displayName: 'Pack'
+  - script: npm pack
+    displayName: 'Pack'
