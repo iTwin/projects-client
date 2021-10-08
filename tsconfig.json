@@ -1,12 +1,12 @@
 {
   "extends": "./node_modules/@itwin/build-tools/tsconfig-base.json",
   "compilerOptions": {
-    "target": "es2017",
+    "target": "es2020",
     "module": "commonjs",
     "outDir": "./lib"
   },
   "include": [
-    "./src/*.ts"
+    "./src/**/*.ts"
   ],
   "exclude": [
     "lib",
