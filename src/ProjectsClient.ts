@@ -7,7 +7,7 @@
  */
 import { AccessToken } from "@itwin/core-bentley";
 import { Client, request, RequestOptions } from "@bentley/itwin-client";
-import { Project as Projects, ProjectsAccess as ProjectsAccess, ProjectsQueryArg as ProjectsQueryArg } from "./ProjectsAccessProps";
+import { Project, ProjectsAccess as ProjectsAccess, ProjectsQueryArg as ProjectsQueryArg } from "./ProjectsAccessProps";
 
 /** Client API to access the project services.
  * @beta
@@ -23,7 +23,7 @@ export class ProjectsAccessClient extends Client implements ProjectsAccess {
    * @param arg Options for paging and/or searching
    * @returns Array of projects, may be empty
    */
-  public async getAll(accessToken: AccessToken, arg?: ProjectsQueryArg): Promise<Projects[]> {
+  public async getAll(accessToken: AccessToken, arg?: ProjectsQueryArg): Promise<Project[]> {
     return this.getByQuery(accessToken, arg);
   }
 
@@ -32,13 +32,13 @@ export class ProjectsAccessClient extends Client implements ProjectsAccess {
    * @param queryArg Optional object containing queryable properties
    * @returns Array of projects meeting the query's requirements
    */
-  private async getByQuery(accessToken: AccessToken, queryArg?: ProjectsQueryArg): Promise<Projects[]> {
+  private async getByQuery(accessToken: AccessToken, queryArg?: ProjectsQueryArg): Promise<Project[]> {
     const requestOptions: RequestOptions = this.getRequestOptions(accessToken);
     let url = await this.getUrl();
     if (queryArg)
       url = url + this.getQueryString(queryArg);
 
-    const projects: Projects[] = [];
+    const projects: Project[] = [];
 
     try {
       const response = await request(url, requestOptions);

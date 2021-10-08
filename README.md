@@ -8,4 +8,4 @@ If you have questions, or wish to contribute to iTwin.js, see our [Contributing 
 
 ## About this Repository
 
-Repo containing the projects client for the iTwin platform.
+Contains the __@itwin/projects-client__ package that wraps sending requests to the project service.
