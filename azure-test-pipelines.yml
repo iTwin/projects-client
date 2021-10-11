@@ -15,16 +15,14 @@ jobs:
 
   - job: Node_16_x
     condition: succeeded()
-    parameters:
-      Node_Version: 16.x
     pool:
       vmImage: ubuntu-latest
 
     steps:
       - task: NodeTool@0
-        displayName: "Use Node ${{ parameters.Node_Version }}"
+        displayName: "Use Node 16.x"
         inputs:
-          versionSpec: "${{ parameters.Node_Version }}"
+          versionSpec: "16.x"
           checkLatest: true
 
       - bash: |
@@ -52,16 +50,14 @@ jobs:
 
   - job: Node_14_x
     condition: succeeded()
-    parameters:
-      Node_Version: 14.x
     pool:
       vmImage: ubuntu-latest
 
     steps:
       - task: NodeTool@0
-        displayName: "Use Node ${{ parameters.Node_Version }}"
+        displayName: "Use Node 14.x"
         inputs:
-          versionSpec: "${{ parameters.Node_Version }}"
+          versionSpec: "14.x"
           checkLatest: true
 
       - bash: |
