@@ -80,5 +80,8 @@ jobs:
       - script: npm run build
         displayName: 'Build'
 
-      - script: npm run test
+      - script: npm run webpackTests
+        displayName: 'Run webpack'
+
+      - script: npm run test:chrome
         displayName: 'Test'
