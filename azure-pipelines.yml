@@ -91,3 +91,4 @@ stages:
       parameters:
         path: '*.tgz'
         artifactName: ProjectsClient
+        name: ProjectsClient
