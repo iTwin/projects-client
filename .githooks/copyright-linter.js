@@ -29,8 +29,9 @@ const oldCopyrightBanner = RegExp(
   "m"
 );
 
-// Grab the file names of only staged files
-const filePaths = getFileNames(!process.argv.includes("--fix"))
+// If '--branch' is passed in all files changed since main/master will be linted
+// otherwise only currently staged files will be linted
+const filePaths = getFileNames(!process.argv.includes("--branch"))
 
 if (filePaths) {
   filePaths.forEach((filePath) => {
