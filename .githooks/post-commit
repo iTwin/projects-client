@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+# A hook script to follow up a recent commit.
+# Called by "git commit" with no arguments. The hook cannot alter
+# the outcome of the commit that invoked it.
+
+# Verify that all recently committed files have the correct copyright header
+# if not, then the correct header will be added or replace the old
+
+# 2. Silently add using a single commit:
+# paired with a pre-commit portion
+preCommitHookStashRegex="stash@\{0\}:[a-zA-Z0-9_ -]+:[a-zA-Z0-9_ -]+Temporary copyright linter stash"
+stashList=$(git stash list)
+echo "stash list ${stashList}"
+if [[ $stashList =~ $preCommitHookStashRegex ]]; then
+echo "Match found"
+git stash pop
+fi
+
+# 4. Silently add using separate commit:
+# unstagedChanges=$(git diff)
+# if [ "$unstagedChanges" != "" ]; then
+# echo "git stash"
+# git stash
+# fi
+
+# # echo "git diff --name-only HEAD"
+# # git diff --name-only HEAD
+
+# # echo "git diff --name-only HEAD~1"
+# # git diff --name-only HEAD~1
+
+# # echo "git diff --name-only HEAD~2"
+# # git diff --name-only HEAD~2
+
+# echo "Entering node"
+# node ./.githooks/copyright-linter.js || exit $?
+# echo "Exit node"
+
+# linterDiff=$(git diff --name-only)
+# echo "Linter diff: $linterDiff"
+# if [ "$linterDiff" != "" ]; then
+# echo "git commit"
+# git commit -a -m "Copyright linter update"
+# fi
+
+# if [ "$unstagedChanges" != "" ]; then
+# echo "git stash pop"
+# git stash pop
+# fi

@@ -8,7 +8,19 @@ const child_process = require("child_process");
 
 function getFileNames(stagedFilesOnly) {
   // Grab only staged files, otherwise grab all files changed relative to main/master
+
+  // 1. Simplest method:
+  // 2. Silently add using single commit:
   const diffCommand = "git diff --name-only " + (stagedFilesOnly ? "--staged" : "main");
+
+
+  // 3. Silently add using separate commit (pre-commit version):
+  // const diffCommand = "git stash show --name-only" + (stagedFilesOnly ? "" : "; git diff --name-only main");
+
+
+  // 4. Silently add using separate commit (post-commit version):
+  // const diffCommand = "git diff --name-only " + (stagedFilesOnly ? "HEAD~1" : "main");
+
   return child_process.execSync(diffCommand)
     .toString()
     .split("\n")
@@ -29,9 +41,11 @@ const oldCopyrightBanner = RegExp(
   "m"
 );
 
-// If '--branch' is passed in all files changed since main/master will be linted
+// If '--branch' is passed-in all files changed since main/master will be linted
 // otherwise only currently staged files will be linted
 const filePaths = getFileNames(!process.argv.includes("--branch"))
+
+console.log(filePaths);
 
 if (filePaths) {
   filePaths.forEach((filePath) => {

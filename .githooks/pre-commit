@@ -8,4 +8,40 @@
 # Verify that all staged files have the correct copyright header
 # if not, then the correct header will be added or replace the old
 
+
+# 1. Simplest method:
 node ./.githooks/copyright-linter.js || exit $?
+
+
+# 2. Silently add using a single commit:
+# requires a post-commit to pop unstaged changes from the stash
+# unstagedChanges=$(git diff --name-only)
+
+# if [ "$unstagedChanges" != "" ]; then
+# git stash --keep-index --include-untracked -m "Temporary copyright linter stash"
+# fi
+
+# node ./.githooks/copyright-linter.js || exit $?
+# git add -u
+
+
+# 3. Silently add using separate commit:
+# unstagedChanges=$(git diff --name-only)
+
+# if [ "$unstagedChanges" != "" ]; then
+# git stash --keep-index
+# fi
+
+# git stash
+# node ./.githooks/copyright-linter.js || exit $?
+
+# if [ $(git diff) != "" ]; then
+# git commit -a --no-verify -m "Copyright linter update"
+# fi
+
+# git stash pop
+# git add .
+
+# if [ "$unstagedChanges" != "" ]; then
+# git stash pop
+# fi
