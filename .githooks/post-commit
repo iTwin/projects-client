@@ -9,13 +9,13 @@
 
 # 2. Silently add using a single commit:
 # paired with a pre-commit portion
-preCommitHookStashRegex="stash@\{0\}:[a-zA-Z0-9_ -]+:[a-zA-Z0-9_ -]+Temporary copyright linter stash"
-stashList=$(git stash list)
-echo "stash list ${stashList}"
-if [[ $stashList =~ $preCommitHookStashRegex ]]; then
-echo "Match found"
-git stash pop
-fi
+# preCommitHookStashRegex="stash@\{0\}:[a-zA-Z0-9_ -]+:[a-zA-Z0-9_ -]+Temporary copyright linter stash"
+# stashList=$(git stash list)
+# echo "stash list ${stashList}"
+# if [[ $stashList =~ $preCommitHookStashRegex ]]; then
+# echo "Match found"
+# git stash pop
+# fi
 
 # 4. Silently add using separate commit:
 # unstagedChanges=$(git diff)
