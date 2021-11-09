@@ -10,7 +10,7 @@
 
 
 # 1. Simplest method:
-node ./.githooks/copyright-linter.js || exit $?
+# node ./.githooks/copyright-linter.js || exit $?
 
 
 # 2. Silently add using a single commit:

@@ -11,40 +11,44 @@
 # paired with a pre-commit portion
 # preCommitHookStashRegex="stash@\{0\}:[a-zA-Z0-9_ -]+:[a-zA-Z0-9_ -]+Temporary copyright linter stash"
 # stashList=$(git stash list)
-# echo "stash list ${stashList}"
 # if [[ $stashList =~ $preCommitHookStashRegex ]]; then
-# echo "Match found"
 # git stash pop
 # fi
 
 # 4. Silently add using separate commit:
 # unstagedChanges=$(git diff)
 # if [ "$unstagedChanges" != "" ]; then
-# echo "git stash"
 # git stash
 # fi
 
-# # echo "git diff --name-only HEAD"
-# # git diff --name-only HEAD
-
-# # echo "git diff --name-only HEAD~1"
-# # git diff --name-only HEAD~1
-
-# # echo "git diff --name-only HEAD~2"
-# # git diff --name-only HEAD~2
-
-# echo "Entering node"
 # node ./.githooks/copyright-linter.js || exit $?
-# echo "Exit node"
 
-# linterDiff=$(git diff --name-only)
-# echo "Linter diff: $linterDiff"
-# if [ "$linterDiff" != "" ]; then
-# echo "git commit"
+# if [ "$(git diff --name-only)" != "" ]; then
 # git commit -a -m "Copyright linter update"
 # fi
 
 # if [ "$unstagedChanges" != "" ]; then
-# echo "git stash pop"
 # git stash pop
 # fi
+
+
+# 5. Use commit --amend
+unstagedChanges=$(git diff)
+
+if [ "$unstagedChanges" != "" ]; then
+git stash
+fi
+
+if [ node ./.githooks/copyright-linter.js ]; then
+  if [ "$(git diff --name-only HEAD)" != "" ]; then
+  git commit -a --amend --allow-empty
+  fi
+else
+  linterFailed=1
+fi
+
+if [ "$unstagedChanges" != "" ]; then
+git stash pop
+fi
+
+exit $? || $linterFailed
