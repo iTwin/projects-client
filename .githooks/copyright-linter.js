@@ -20,6 +20,7 @@ function getFileNames(stagedFilesOnly) {
 
   // 4. Silently add using separate commit (post-commit version):
   // 5. Use --amend:
+  // Command must be changed if primary branch name is 'master' not 'main'
   const diffCommand = "git diff --name-only " + (stagedFilesOnly ? "HEAD~1" : "main");
 
   return child_process.execSync(diffCommand)
@@ -35,11 +36,19 @@ function getCopyrightBanner(useCRLF) {
   return `/*---------------------------------------------------------------------------------------------${eol}* Copyright (c) Bentley Systems, Incorporated. All rights reserved.${eol}* See LICENSE.md in the project root for license terms and full copyright notice.${eol}*--------------------------------------------------------------------------------------------*/${eol}`;
 }
 
-const longCopyright = "/?/[*](.|\n|\r\n)*?Copyright(.|\n|\r\n)*?[*]/(\n|\r\n)";
-const shortCopyright = "//\\s*Copyright.*\n";
+/* Regex breakdown: select block comments if it contains the word Copyright
+* /?/[*] : finds either //* or /*
+* (?:(?![*]/)(\\s|\\S))* : match all symbols (\s whitespace, \S non-whitespace) that are not comment block closers * /
+* Copyright(\\s|\\S)*? : match Copyright and all symbols until the next comment block closer * /
+* .*(\n|\r\n) : match all characters and the next newline
+*/
+const longCopyright = "/?/[*](?:(?![*]/)(\\s|\\S))*Copyright(\\s|\\S)*?[*]/.*(\n|\r\n)";
+// Regex breakdown: select comments that contain the word Copyright
+const shortCopyright = "//\\s*Copyright.*(\n|\r\n)";
+
 const oldCopyrightBanner = RegExp(
   `^(${longCopyright})|(${shortCopyright})`,
-  "m"
+  "m" // Lack of 'g' means only select the first match in each file
 );
 
 // If '--branch' is passed-in all files changed since main/master will be linted
