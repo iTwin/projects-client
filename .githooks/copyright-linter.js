@@ -52,7 +52,7 @@ const oldCopyrightBanner = RegExp(
 );
 
 // If '--branch' is passed-in all files changed since main/master will be linted
-// otherwise only currently staged files will be linted
+// otherwise only files changed last commit and currently will be linted
 const filePaths = getFileNames(!process.argv.includes("--branch"))
 
 if (filePaths) {
@@ -61,6 +61,7 @@ if (filePaths) {
     const lastNewlineIdx = fileContent.lastIndexOf("\n");
     const copyrightBanner = getCopyrightBanner(lastNewlineIdx > 0 && fileContent[lastNewlineIdx - 1] === "\r");
 
+    // up-to-date
     if (fileContent.startsWith(copyrightBanner))
       return;
 
