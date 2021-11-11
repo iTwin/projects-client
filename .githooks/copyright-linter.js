@@ -36,7 +36,7 @@ function getCopyrightBanner(useCRLF) {
   return `/*---------------------------------------------------------------------------------------------${eol}* Copyright (c) Bentley Systems, Incorporated. All rights reserved.${eol}* See LICENSE.md in the project root for license terms and full copyright notice.${eol}*--------------------------------------------------------------------------------------------*/${eol}`;
 }
 
-/* Regex breakdown: select block comments if it contains the word Copyright
+/* Regex breakdown: select block comments if they contain the word Copyright
 * /?/[*] : finds either //* or /*
 * (?:(?![*]/)(\\s|\\S))* : match all symbols (\s whitespace, \S non-whitespace) that are not comment block closers * /
 * Copyright(\\s|\\S)*? : match Copyright and all symbols until the next comment block closer * /
