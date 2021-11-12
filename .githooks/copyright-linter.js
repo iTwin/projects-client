@@ -6,22 +6,23 @@ const fs = require("fs");
 const path = require("path");
 const child_process = require("child_process");
 
-function getFileNames(stagedFilesOnly) {
-  // Grab only staged files, otherwise grab all files changed relative to main/master
+function getFileNames(lintBranch) {
+  // Get names of files changed between current branch and main/master
+  // otherwise get names of files changed most recently
 
   // 1. Simplest method:
   // 2. Silently add using single commit:
-  // const diffCommand = "git diff --name-only " + (stagedFilesOnly ? "--staged" : "main");
+  // const diffCommand = "git diff --name-only " + (lintBranch ? "main" : "--staged");
 
 
   // 3. Silently add using separate commit (pre-commit version):
-  // const diffCommand = "git stash show --name-only" + (stagedFilesOnly ? "" : "; git diff --name-only main");
+  // const diffCommand = "git stash show --name-only" + (lintBranch ? "; git diff --name-only main" : "");
 
 
   // 4. Silently add using separate commit (post-commit version):
   // 5. Use --amend:
   // Command must be changed if primary branch name is 'master' not 'main'
-  const diffCommand = "git diff --name-only " + (stagedFilesOnly ? "HEAD~1" : "main");
+  const diffCommand = "git diff --name-only " + (lintBranch ? "main" : "HEAD~1");
 
   return child_process.execSync(diffCommand)
     .toString()
@@ -53,7 +54,7 @@ const oldCopyrightBanner = RegExp(
 
 // If '--branch' is passed-in all files changed since main/master will be linted
 // otherwise only files changed last commit and currently will be linted
-const filePaths = getFileNames(!process.argv.includes("--branch"))
+const filePaths = getFileNames(process.argv.includes("--branch"))
 
 if (filePaths) {
   filePaths.forEach((filePath) => {
