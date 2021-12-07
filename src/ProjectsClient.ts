@@ -5,7 +5,7 @@
 /** @packageDocumentation
  * @module ProjectsClient
  */
-import { AccessToken } from "@itwin/core-bentley";
+import type { AccessToken } from "@itwin/core-bentley";
 import { request, RequestOptions } from "@bentley/itwin-client";
 import { Project, ProjectsAccess as ProjectsAccess, ProjectsQueryArg as ProjectsQueryArg } from "./ProjectsAccessProps";
 
