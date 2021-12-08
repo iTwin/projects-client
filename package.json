@@ -37,6 +37,7 @@
     "@bentley/itwin-client": "3.0.0-dev.138"
   },
   "devDependencies": {
+    "@itwin/core-bentley": "rc",
     "@itwin/build-tools": "rc",
     "@itwin/certa": "rc",
     "@itwin/eslint-plugin": "rc",
