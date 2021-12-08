@@ -39,13 +39,16 @@ jobs:
         env:
           test_reg_password: $(imjs_regular_user_password)
 
-      - script: npm install
+      - script: npm install -g pnpm@6.19.0
+        displayName: install pnpm globally
+
+      - script: pnpm install
         displayName: 'Install dependencies'
 
-      - script: npm run build
+      - script: pnpm run build
         displayName: 'Build'
 
-      - script: npm run test
+      - script: pnpm run test
         displayName: 'Test'
 
   - job: Node_14_x
@@ -74,11 +77,14 @@ jobs:
         env:
           test_reg_password: $(imjs_regular_user_password)
 
-      - script: npm install
+      - script: npm install -g pnpm@6.19.0
+        displayName: install pnpm globally
+
+      - script: pnpm install
         displayName: 'Install dependencies'
 
-      - script: npm run build
+      - script: pnpm run build
         displayName: 'Build'
 
-      - script: npm run test
+      - script: pnpm run test
         displayName: 'Test'
