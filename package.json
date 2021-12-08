@@ -33,12 +33,12 @@
     "url": "https://github.com/iTwin/projects-client"
   },
   "dependencies": {
+    "@itwin/core-bentley": "rc",
     "@bentley/itwin-client": "3.0.0-dev.138"
   },
   "devDependencies": {
     "@itwin/build-tools": "rc",
     "@itwin/certa": "rc",
-    "@itwin/core-bentley": "rc",
     "@itwin/eslint-plugin": "rc",
     "@itwin/oidc-signin-tool": "3.0.0",
     "@types/chai": "^4.1.4",
