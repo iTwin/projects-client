@@ -7,7 +7,7 @@
  */
 import type { AccessToken } from "@itwin/core-bentley";
 import { request, RequestOptions } from "@bentley/itwin-client";
-import { Project, ProjectsAccess as ProjectsAccess, ProjectsQueryArg as ProjectsQueryArg } from "./ProjectsAccessProps";
+import { Project, ProjectsAccess, ProjectsQueryArg } from "./ProjectsAccessProps";
 
 /** Client API to access the project services.
  * @beta
