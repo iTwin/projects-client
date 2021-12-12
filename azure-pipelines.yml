@@ -30,10 +30,11 @@ stages:
       pool:
         vmImage: $(imageName)
       steps:
-      - script: npm install
-        displayName: 'Install dependencies'
       - script: npm install -g pnpm@6.19.0
         displayName: install pnpm globally
+
+      - script: pnpm install
+        displayName: 'Install dependencies'
 
       - script: pnpm run build
         displayName: 'Build'
