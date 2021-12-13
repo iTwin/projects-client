@@ -6,7 +6,7 @@
  * @module ProjectsClient
  */
 
-import { AccessToken } from "@itwin/core-bentley";
+import type { AccessToken } from "@itwin/core-bentley";
 
 /** The a simplified project object
  * @beta

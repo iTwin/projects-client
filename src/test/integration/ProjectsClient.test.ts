@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as chai from "chai";
-import { AccessToken } from "@itwin/core-bentley";
+import type { AccessToken } from "@itwin/core-bentley";
 import { ProjectsAccessClient } from "../../ProjectsClient";
 import { Project, ProjectsSearchableProperty } from "../../ProjectsAccessProps";
 import { TestConfig } from "../TestConfig";
