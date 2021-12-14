@@ -1,6 +1,6 @@
 {
   "name": "@itwin/projects-client",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Projects client for the iTwin platform",
   "main": "lib/cjs/projects-client.js",
   "module": "lib/esm/projects-client.js",
