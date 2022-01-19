@@ -107,11 +107,20 @@ export class ProjectsAccessClient implements ProjectsAccess {
         queryBuilder = `${queryBuilder}$top=${queryArg.pagination.top}&`;
     }
 
-    // No query
-    if ("" === queryBuilder)
-      return queryBuilder;
-
     // slice off last '&'
-    return `?${queryBuilder.slice(0, -1)}`;
+    if (queryBuilder.length > 0 && queryBuilder[queryBuilder.length - 1] === "&")
+      queryBuilder = queryBuilder.slice(0, -1);
+
+    // Handle source
+    let sourcePath = "";
+    if (queryArg.source !== undefined && queryArg.source.length > 0) {
+      sourcePath = `${queryArg.source}/`;
+    }
+
+    // No query
+    if (queryBuilder.length === 0)
+      return sourcePath;
+
+    return `${sourcePath}?${queryBuilder}`;
   }
 }

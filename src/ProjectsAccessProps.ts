@@ -41,13 +41,22 @@ export interface ProjectsSearchArg {
   exactMatch: boolean;
 }
 
-/** Set of optional arguments used for methods that allow advanced queries
+/** Possible Project sources.
  * @beta
  */
-export interface ProjectsQueryArg {
-  pagination?: ProjectsPaginationArg;
-  search?: ProjectsSearchArg;
+export enum ProjectsSource {
+  All = "",
+  Favorites = "favorites",
+  Recents = "recents"
 }
+
+/** Set of optional arguments used for methods that allow advanced queries.
+ * The source and search properties are mutually exclusive.
+ * @beta
+ */
+export type ProjectsQueryArg =
+  { pagination?: ProjectsPaginationArg, search?: never, source?: ProjectsSource } |
+  { pagination?: ProjectsPaginationArg, search?: ProjectsSearchArg, source?: never };
 
 /** Methods for accessing projects
  * @beta
