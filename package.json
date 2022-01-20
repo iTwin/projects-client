@@ -1,6 +1,6 @@
 {
   "name": "@itwin/projects-client",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Projects client for the iTwin platform",
   "main": "lib/cjs/projects-client.js",
   "module": "lib/esm/projects-client.js",
@@ -33,7 +33,7 @@
     "url": "https://github.com/iTwin/projects-client"
   },
   "dependencies": {
-    "@bentley/itwin-client": "3.0.0-dev.138"
+    "axios": "^0.25.0"
   },
   "devDependencies": {
     "@itwin/build-tools": "rc",
