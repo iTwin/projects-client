@@ -7,7 +7,7 @@
  */
 import type { AccessToken } from "@itwin/core-bentley";
 import axios, { AxiosRequestConfig } from "axios";
-import { Project, ProjectsAccess, ProjectsQueryArg } from "./ProjectsAccessProps";
+import { Project, ProjectsAccess, ProjectsLinks, ProjectsQueryArg, ProjectsQueryResult } from "./ProjectsAccessProps";
 
 /** Client API to access the project services.
  * @beta
@@ -30,21 +30,25 @@ export class ProjectsAccessClient implements ProjectsAccess {
    * @returns Array of projects, may be empty
    */
   public async getAll(accessToken: AccessToken, arg?: ProjectsQueryArg): Promise<Project[]> {
-    return this.getByQuery(accessToken, arg);
+    return (await this.getByQuery(accessToken, arg)).projects;
   }
 
-  /** Gets all projects using the given query options
+  /** Gets projects using the given query options
    * @param accessToken The client access token string
    * @param queryArg Optional object containing queryable properties
-   * @returns Array of projects meeting the query's requirements
+   * @returns Projects and links meeting the query's requirements
    */
-  private async getByQuery(accessToken: AccessToken, queryArg?: ProjectsQueryArg): Promise<Project[]> {
-    const requestOptions = this.getRequestOptions(accessToken);
+  public async getByQuery(accessToken: AccessToken, queryArg?: ProjectsQueryArg): Promise<ProjectsQueryResult> {
     let url = this._baseUrl;
     if (queryArg)
       url = url + this.getQueryString(queryArg);
+    return this.getByUrl(accessToken, url);
+  }
 
+  private async getByUrl(accessToken: AccessToken, url: string): Promise<ProjectsQueryResult> {
+    const requestOptions = this.getRequestOptions(accessToken);
     const projects: Project[] = [];
+    const links: ProjectsLinks = {};
 
     try {
       const response = await axios.get(url, requestOptions);
@@ -60,11 +64,21 @@ export class ProjectsAccessClient implements ProjectsAccess {
           code: project.projectNumber,
         });
       });
+
+      const linkData = response.data._links;
+      if (linkData) {
+        if (linkData.self && linkData.self.href)
+          links.self = async (token: AccessToken) => this.getByUrl(token, linkData.self.href);
+        if (linkData.next && linkData.next.href)
+          links.next = async (token: AccessToken) => this.getByUrl(token, linkData.next.href);
+        if (linkData.prev && linkData.prev.href)
+          links.previous = async (token: AccessToken) => this.getByUrl(token, linkData.prev.href);
+      }
     } catch (errorResponse: any) {
       throw Error(`API request error: ${JSON.stringify(errorResponse)}`);
     }
 
-    return projects;
+    return { projects, links };
   }
 
   /**
