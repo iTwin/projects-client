@@ -5,9 +5,9 @@
 /** @packageDocumentation
  * @module ProjectsClient
  */
-import { AccessToken } from "@itwin/core-bentley";
-import { request, RequestOptions } from "@bentley/itwin-client";
-import { Project, ProjectsAccess as ProjectsAccess, ProjectsQueryArg as ProjectsQueryArg } from "./ProjectsAccessProps";
+import type { AccessToken } from "@itwin/core-bentley";
+import axios, { AxiosRequestConfig } from "axios";
+import { Project, ProjectsAccess, ProjectsQueryArg } from "./ProjectsAccessProps";
 
 /** Client API to access the project services.
  * @beta
@@ -39,7 +39,7 @@ export class ProjectsAccessClient implements ProjectsAccess {
    * @returns Array of projects meeting the query's requirements
    */
   private async getByQuery(accessToken: AccessToken, queryArg?: ProjectsQueryArg): Promise<Project[]> {
-    const requestOptions: RequestOptions = this.getRequestOptions(accessToken);
+    const requestOptions = this.getRequestOptions(accessToken);
     let url = this._baseUrl;
     if (queryArg)
       url = url + this.getQueryString(queryArg);
@@ -47,13 +47,13 @@ export class ProjectsAccessClient implements ProjectsAccess {
     const projects: Project[] = [];
 
     try {
-      const response = await request(url, requestOptions);
+      const response = await axios.get(url, requestOptions);
 
-      if (!response.body.projects) {
+      if (!response.data.projects) {
         new Error("Expected array of projects not found in API response.");
       }
 
-      response.body.projects.forEach((project: any) => {
+      response.data.projects.forEach((project: any) => {
         projects.push({
           id: project.id,
           name: project.displayName,
@@ -71,7 +71,7 @@ export class ProjectsAccessClient implements ProjectsAccess {
    * Build the request methods, headers, and other options
    * @param accessTokenString The client access token string
    */
-  private getRequestOptions(accessTokenString: string): RequestOptions {
+  private getRequestOptions(accessTokenString: string): AxiosRequestConfig {
     return {
       method: "GET",
       headers: {

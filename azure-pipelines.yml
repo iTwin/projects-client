@@ -30,13 +30,16 @@ stages:
       pool:
         vmImage: $(imageName)
       steps:
-      - script: npm install
+      - script: npm install -g pnpm@6.19.0
+        displayName: install pnpm globally
+
+      - script: pnpm install
         displayName: 'Install dependencies'
 
-      - script: npm run build
+      - script: pnpm run build
         displayName: 'Build'
 
-      - script: npm run lint
+      - script: pnpm run lint
         displayName: 'Lint'
 
       - script: npm pack
@@ -73,7 +76,7 @@ stages:
           echo "##vso[task.setvariable variable=projectsClientName;isOutput=true]$projectsClientName"
         displayName: 'Store Build Info'
         name: info
-        condition: and(succeeded(), eq(variables.try_publish, true), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Agent.OS'], 'Linux'))
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Agent.OS'], 'Linux'))
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: '$(Build.SourcesDirectory)/itwin-projects-client-$(info.projectsClientVersion).tgz'
