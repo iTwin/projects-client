@@ -7,22 +7,9 @@ const path = require("path");
 const child_process = require("child_process");
 
 function getFileNames(lintBranch) {
-  // Get names of files changed between current branch and main/master
-  // otherwise get names of files changed most recently
-
-  // 1. Simplest method:
-  // 2. Silently add using single commit:
-  // const diffCommand = "git diff --name-only " + (lintBranch ? "main" : "--staged");
-
-
-  // 3. Silently add using separate commit (pre-commit version):
-  // const diffCommand = "git stash show --name-only" + (lintBranch ? "; git diff --name-only main" : "");
-
-
-  // 4. Silently add using separate commit (post-commit version):
-  // 5. Use --amend:
-  // Command must be changed if primary branch name is 'master' not 'main'
-  const diffCommand = "git diff --name-only " + (lintBranch ? "main" : "HEAD~1");
+  // Get name of every file changed, added, or renamed (excluding deleted files)
+  // defaults to between current branch and master, otherwise between last commit and currently
+  const diffCommand = "git diff --name-only --diff-filter=d -l0 " + (lintBranch ? "main" : "HEAD~1");
 
   return child_process.execSync(diffCommand)
     .toString()
@@ -41,7 +28,7 @@ function getCopyrightBanner(useCRLF) {
 * /?/[*] : finds either //* or /*
 * (?:(?![*]/)(\\s|\\S))* : match all symbols (\s whitespace, \S non-whitespace) that are not comment block closers * /
 * Copyright(\\s|\\S)*? : match Copyright and all symbols until the next comment block closer * /
-* .*(\n|\r\n) : match all characters and the next newline
+* [*]/.*(\n|\r\n) : match from the comment block closer * / to the next newline
 */
 const longCopyright = "/?/[*](?:(?![*]/)(\\s|\\S))*Copyright(\\s|\\S)*?[*]/.*(\n|\r\n)";
 // Regex breakdown: select comments that contain the word Copyright
@@ -59,8 +46,8 @@ const filePaths = getFileNames(process.argv.includes("--branch"))
 if (filePaths) {
   filePaths.forEach((filePath) => {
     let fileContent = fs.readFileSync(filePath, { encoding: "utf8" });
-    const lastNewlineIdx = fileContent.lastIndexOf("\n");
-    const copyrightBanner = getCopyrightBanner(lastNewlineIdx > 0 && fileContent[lastNewlineIdx - 1] === "\r");
+    const lastNewlineIndex = fileContent.lastIndexOf("\n");
+    const copyrightBanner = getCopyrightBanner(lastNewlineIndex > 0 && fileContent[lastNewlineIndex - 1] === "\r");
 
     // up-to-date
     if (fileContent.startsWith(copyrightBanner))

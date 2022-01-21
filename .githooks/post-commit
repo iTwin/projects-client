@@ -1,59 +1,32 @@
 #!/bin/sh
 #
-# A hook script to follow up a recent commit.
 # Called by "git commit" with no arguments. The hook cannot alter
-# the outcome of the commit that invoked it.
+# the success of the commit that invoked it.
 
 # Verify that all recently committed files have the correct copyright header
 # if not, then the correct header will be added or replace the old
 
-# 2. Silently add using a single commit:
-# paired with a pre-commit portion
-# preCommitHookStashRegex="stash@\{0\}:[a-zA-Z0-9_ -]+:[a-zA-Z0-9_ -]+Temporary copyright linter stash"
-# stashList=$(git stash list)
-# if [[ $stashList =~ $preCommitHookStashRegex ]]; then
-# git stash pop
-# fi
-
-# 4. Silently add using separate commit:
-# unstagedChanges=$(git diff)
-# if [ "$unstagedChanges" != "" ]; then
-# git stash
-# fi
-
-# node ./.githooks/copyright-linter.js || exit $?
-
-# if [ "$(git diff --name-only)" != "" ]; then
-# git commit -a -m "Copyright linter update"
-# fi
-
-# if [ "$unstagedChanges" != "" ]; then
-# git stash pop
-# fi
-
-
-# 5. Use commit --amend
 unstagedChanges=$(git diff)
 
 # stash all unstaged changes, including untracked files
 if [ "$unstagedChanges" != "" ]; then
-git stash -u
+  git stash -u
 fi
 
 if $(node ./.githooks/copyright-linter.js) ; then
   if [ "$(git diff --name-only HEAD)" != "" ]; then
-  # the linter succeeded and changes were made, add them to the previous commit
-  # may be empty if all previous changes were to the linter headers
-  git commit -a --amend --allow-empty
+    # the linter succeeded and changes were made, add them to the previous commit
+    # may be empty if all previous changes were to the linter headers
+    git commit -a --amend --allow-empty
   fi
 else
   linterFailed=1
 fi
 
-# apply unstaged changes regardless of linter success
+# apply unstaged changes regardless of linter exit status
 if [ "$unstagedChanges" != "" ]; then
-# may merge conflict if unstaged changes altered copyright headers
-git stash pop
+  # may merge conflict if both staged and unstaged changes altered copyright headers
+  git stash pop
 fi
 
 exit $? || $linterFailed
