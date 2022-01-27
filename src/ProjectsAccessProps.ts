@@ -64,8 +64,6 @@ export type ProjectsQueryArg =
 export interface ProjectsAccess {
   /** Get projects associated with the requester */
   getAll(accessToken: AccessToken, arg?: ProjectsQueryArg): Promise<Project[]>;
-  /** Get projects and links by query */
-  getByQuery(accessToken: AccessToken, queryArg?: ProjectsQueryArg): Promise<ProjectsQueryResult>;
 }
 
 /** An async function that returns a [[ProjectsQueryResult]]

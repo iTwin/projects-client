@@ -35,13 +35,13 @@ export class ProjectsAccessClient implements ProjectsAccess {
 
   /** Gets projects using the given query options
    * @param accessToken The client access token string
-   * @param queryArg Optional object containing queryable properties
+   * @param arg Optional object containing queryable properties
    * @returns Projects and links meeting the query's requirements
    */
-  public async getByQuery(accessToken: AccessToken, queryArg?: ProjectsQueryArg): Promise<ProjectsQueryResult> {
+  public async getByQuery(accessToken: AccessToken, arg?: ProjectsQueryArg): Promise<ProjectsQueryResult> {
     let url = this._baseUrl;
-    if (queryArg)
-      url = url + this.getQueryString(queryArg);
+    if (arg)
+      url = url + this.getQueryString(arg);
     return this.getByUrl(accessToken, url);
   }
 
