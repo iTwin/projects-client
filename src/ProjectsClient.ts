@@ -7,7 +7,7 @@
  */
 import type { AccessToken } from "@itwin/core-bentley";
 import axios, { AxiosRequestConfig } from "axios";
-import { Project, ProjectsAccess, ProjectsQueryArg } from "./ProjectsAccessProps";
+import { Project, ProjectsAccess, ProjectsLinks, ProjectsQueryArg, ProjectsQueryResult } from "./ProjectsAccessProps";
 
 /** Client API to access the project services.
  * @beta
@@ -30,21 +30,25 @@ export class ProjectsAccessClient implements ProjectsAccess {
    * @returns Array of projects, may be empty
    */
   public async getAll(accessToken: AccessToken, arg?: ProjectsQueryArg): Promise<Project[]> {
-    return this.getByQuery(accessToken, arg);
+    return (await this.getByQuery(accessToken, arg)).projects;
   }
 
-  /** Gets all projects using the given query options
+  /** Gets projects using the given query options
    * @param accessToken The client access token string
-   * @param queryArg Optional object containing queryable properties
-   * @returns Array of projects meeting the query's requirements
+   * @param arg Optional object containing queryable properties
+   * @returns Projects and links meeting the query's requirements
    */
-  private async getByQuery(accessToken: AccessToken, queryArg?: ProjectsQueryArg): Promise<Project[]> {
-    const requestOptions = this.getRequestOptions(accessToken);
+  public async getByQuery(accessToken: AccessToken, arg?: ProjectsQueryArg): Promise<ProjectsQueryResult> {
     let url = this._baseUrl;
-    if (queryArg)
-      url = url + this.getQueryString(queryArg);
+    if (arg)
+      url = url + this.getQueryString(arg);
+    return this.getByUrl(accessToken, url);
+  }
 
+  private async getByUrl(accessToken: AccessToken, url: string): Promise<ProjectsQueryResult> {
+    const requestOptions = this.getRequestOptions(accessToken);
     const projects: Project[] = [];
+    const links: ProjectsLinks = {};
 
     try {
       const response = await axios.get(url, requestOptions);
@@ -60,11 +64,21 @@ export class ProjectsAccessClient implements ProjectsAccess {
           code: project.projectNumber,
         });
       });
+
+      const linkData = response.data._links;
+      if (linkData) {
+        if (linkData.self && linkData.self.href)
+          links.self = async (token: AccessToken) => this.getByUrl(token, linkData.self.href);
+        if (linkData.next && linkData.next.href)
+          links.next = async (token: AccessToken) => this.getByUrl(token, linkData.next.href);
+        if (linkData.prev && linkData.prev.href)
+          links.previous = async (token: AccessToken) => this.getByUrl(token, linkData.prev.href);
+      }
     } catch (errorResponse: any) {
       throw Error(`API request error: ${JSON.stringify(errorResponse)}`);
     }
 
-    return projects;
+    return { projects, links };
   }
 
   /**
@@ -107,11 +121,20 @@ export class ProjectsAccessClient implements ProjectsAccess {
         queryBuilder = `${queryBuilder}$top=${queryArg.pagination.top}&`;
     }
 
-    // No query
-    if ("" === queryBuilder)
-      return queryBuilder;
-
     // slice off last '&'
-    return `?${queryBuilder.slice(0, -1)}`;
+    if (queryBuilder.length > 0 && queryBuilder[queryBuilder.length - 1] === "&")
+      queryBuilder = queryBuilder.slice(0, -1);
+
+    // Handle source
+    let sourcePath = "";
+    if (queryArg.source !== undefined && queryArg.source.length > 0) {
+      sourcePath = `${queryArg.source}/`;
+    }
+
+    // No query
+    if (queryBuilder.length === 0)
+      return sourcePath;
+
+    return `${sourcePath}?${queryBuilder}`;
   }
 }
