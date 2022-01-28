@@ -5,7 +5,7 @@
 import * as chai from "chai";
 import type { AccessToken } from "@itwin/core-bentley";
 import { ProjectsAccessClient } from "../../ProjectsClient";
-import { Project, ProjectsSearchableProperty } from "../../ProjectsAccessProps";
+import { Project, ProjectsSearchableProperty, ProjectsSource } from "../../ProjectsAccessProps";
 import { TestConfig } from "../TestConfig";
 
 chai.should();
@@ -152,5 +152,25 @@ describe("ProjectsClient", () => {
     projectList.forEach((project) => {
       chai.expect(project).property("name").equal(TestConfig.projectName);
     });
+  });
+
+  it("should get a list of recent projects", async () => {
+    const projectList: Project[] = await projectsAccessClient.getAll(accessToken, {
+      source: ProjectsSource.Recents,
+    });
+
+    // At least one project
+    // TODO: is there a way to verify the recency of the projects?
+    chai.expect(projectList).to.not.be.empty;
+  });
+
+  it("should get a list of favorite projects", async () => {
+    const projectList: Project[] = await projectsAccessClient.getAll(accessToken, {
+      source: ProjectsSource.Favorites,
+    });
+
+    // At least one project
+    // TODO: is there a way to verify if these projects are all the favorites?
+    chai.expect(projectList).to.not.be.empty;
   });
 });
