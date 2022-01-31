@@ -5,7 +5,8 @@
 import * as chai from "chai";
 import type { AccessToken } from "@itwin/core-bentley";
 import { ProjectsAccessClient } from "../../ProjectsClient";
-import { Project, ProjectsSearchableProperty, ProjectsSource } from "../../ProjectsAccessProps";
+import type { Project} from "../../ProjectsAccessProps";
+import { ProjectsSearchableProperty, ProjectsSource } from "../../ProjectsAccessProps";
 import { TestConfig } from "../TestConfig";
 
 chai.should();

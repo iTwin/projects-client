@@ -6,8 +6,9 @@
  * @module ProjectsClient
  */
 import type { AccessToken } from "@itwin/core-bentley";
-import axios, { AxiosRequestConfig } from "axios";
-import { Project, ProjectsAccess, ProjectsLinks, ProjectsQueryArg, ProjectsQueryResult } from "./ProjectsAccessProps";
+import type { AxiosRequestConfig } from "axios";
+import axios from "axios";
+import type { Project, ProjectsAccess, ProjectsLinks, ProjectsQueryArg, ProjectsQueryResult } from "./ProjectsAccessProps";
 
 /** Client API to access the project services.
  * @beta
