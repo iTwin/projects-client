@@ -1,6 +1,6 @@
 {
   "name": "@itwin/projects-client",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Projects client for the iTwin platform",
   "main": "lib/cjs/projects-client.js",
   "module": "lib/esm/projects-client.js",
@@ -37,11 +37,11 @@
     "axios": "^0.25.0"
   },
   "devDependencies": {
-    "@itwin/build-tools": "rc",
-    "@itwin/certa": "rc",
-    "@itwin/core-bentley": "rc",
-    "@itwin/eslint-plugin": "rc",
-    "@itwin/oidc-signin-tool": "3.0.0",
+    "@itwin/build-tools": "^3.0.0",
+    "@itwin/certa": "^3.0.0",
+    "@itwin/core-bentley": "^3.0.0",
+    "@itwin/eslint-plugin": "^3.0.0",
+    "@itwin/oidc-signin-tool": "^3.2.0",
     "@types/chai": "^4.1.4",
     "@types/mocha": "^8.2.2",
     "@types/node": "14.14.31",
@@ -59,6 +59,10 @@
     "plugins": [
       "@itwin"
     ],
-    "extends": "plugin:@itwin/itwinjs-recommended"
+    "extends": "plugin:@itwin/itwinjs-recommended",
+    "rules": {
+      "no-duplicate-imports": "off",
+      "@typescript-eslint/consistent-type-imports": "error"
+    }
   }
 }
