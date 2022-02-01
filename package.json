@@ -13,6 +13,7 @@
     "copyright:all": "node ./.githooks/copyright-linter.js --all",
     "lint": "eslint -f visualstudio \"./src/**/*.ts\" 1>&2",
     "lint:fix": "npm run lint -- --fix",
+    "pack": "npm pack",
     "test": "npm run -s webpackTests && npm run -s test:chrome",
     "test:chrome": "certa -r chrome",
     "test:electron": "certa -r electron",
