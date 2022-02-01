@@ -6,10 +6,13 @@ const fs = require("fs");
 const path = require("path");
 const child_process = require("child_process");
 
-function getFileNames(lintBranch) {
-  // Get name of every file changed, added, or renamed (excluding deleted files)
-  // defaults to between current branch and master, otherwise between last commit and currently
-  const diffCommand = "git diff --name-only --diff-filter=d -l0 " + (lintBranch ? "main" : "HEAD~1");
+function getFileNames(lintAll) {
+  // Default to get name of every file changed, added, or renamed (excluding deleted files) between last commit and current
+  let diffCommand = "git diff --name-only --diff-filter=d -l0 HEAD~1";
+
+  // If specified, get name of every file in repo instead
+  if (lintAll)
+    diffCommand = "git ls-files";
 
   return child_process.execSync(diffCommand)
     .toString()
@@ -24,12 +27,6 @@ function getCopyrightBanner(useCRLF) {
   return `/*---------------------------------------------------------------------------------------------${eol}* Copyright (c) Bentley Systems, Incorporated. All rights reserved.${eol}* See LICENSE.md in the project root for license terms and full copyright notice.${eol}*--------------------------------------------------------------------------------------------*/${eol}`;
 }
 
-/* Regex breakdown: select block comments if they contain the word Copyright
-* /?/[*] : finds either //* or /*
-* (?:(?![*]/)(\\s|\\S))* : match all symbols (\s whitespace, \S non-whitespace) that are not comment block closers * /
-* Copyright(\\s|\\S)*? : match Copyright and all symbols until the next comment block closer * /
-* [*]/.*(\n|\r\n) : match from the comment block closer * / to the next newline
-*/
 const longCopyright = "/?/[*](?:(?![*]/)(\\s|\\S))*Copyright(\\s|\\S)*?[*]/.*(\n|\r\n)";
 // Regex breakdown: select comments that contain the word Copyright
 const shortCopyright = "//\\s*Copyright.*(\n|\r\n)";
@@ -39,9 +36,9 @@ const oldCopyrightBanner = RegExp(
   "m" // Lack of 'g' means only select the first match in each file
 );
 
-// If '--branch' is passed-in all files changed since main/master will be linted
+// If '--all' is passed-in all files will be linted
 // otherwise only files changed last commit and currently will be linted
-const filePaths = getFileNames(process.argv.includes("--branch"))
+const filePaths = getFileNames(process.argv.includes("--all"))
 
 if (filePaths) {
   filePaths.forEach((filePath) => {
