@@ -14,13 +14,13 @@ Contains the __@itwin/projects-client__ package that wraps sending requests to t
 
 The initial setup steps must be run to prepare for development. Afterwards use the established setup steps to update, build, and verify your local work.
 
-#### Initial setup
+### Initial setup
 
 1. Clone repository: `git clone`
 2. Install dependencies: `npm install`
 3. Setup git hooks using a repository specific git config: `npm run config:githooks`
 
-#### Established setup
+### Established setup
 
 1. Pull updates to the repository: `git pull`
 2. Install dependencies: `npm install`
