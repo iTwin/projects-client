@@ -118,7 +118,7 @@ export class ProjectsAccessClient implements ProjectsAccess {
     return {
       method: "GET",
       headers: {
-        authorization: accessTokenString,
+        "authorization": accessTokenString,
         "content-type": "application/json",
       },
     };
