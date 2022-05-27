@@ -46,7 +46,7 @@ export class ProjectsAccessClient implements ProjectsAccess {
     return this.getByUrl(accessToken, url);
   }
 
-  public async getByProjectId(accessToken: AccessToken, projectId: string) {
+  public async getByProjectId(accessToken: AccessToken, projectId: string): Promise<Project> {
     const url = this._baseUrl + projectId;
     const requestOptions = this.getRequestOptions(accessToken);
     const response = await axios.get(url, requestOptions);
@@ -54,7 +54,12 @@ export class ProjectsAccessClient implements ProjectsAccess {
     if (!response.data.project) {
       new Error("Project not found in API response.");
     }
-    return response.data.project;
+    const project = {
+      id: response.data.project.id,
+      name: response.data.project.displayName,
+      code: response.data.project.projectNumber,
+    };
+    return project;
   }
 
   private async getByUrl(accessToken: AccessToken, url: string): Promise<ProjectsQueryResult> {
