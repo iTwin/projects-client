@@ -48,7 +48,7 @@ export class ProjectsAccessClient implements ProjectsAccess {
 
   /** Get project details by passing in id of the project
    * @param accessToken The client access token string
-   * @param projectId Id of the project to get the details 
+   * @param projectId Id of the project to get the details
    * @returns Project details with id, name and code
    */
   public async getByProjectId(accessToken: AccessToken, projectId: string): Promise<Project> {
