@@ -53,9 +53,9 @@ export class ProjectsAccessClient implements ProjectsAccess {
    */
   public async getByProjectId(accessToken: AccessToken, projectId: string): Promise<Project> {
     const url = this._baseUrl + projectId;
-    let project : Project = {
-      id: ""
-    }
+    let project: Project = {
+      id: "",
+    };
     const requestOptions = this.getRequestOptions(accessToken);
     try {
       const response = await axios.get(url, requestOptions);
