@@ -44,7 +44,6 @@ describe("ProjectsClient", () => {
 
     const projectInfo: Project = await projectsAccessClient.getByProjectId(accessToken, mappedFullProjectList[0].id);
 
-    // project name
     chai.expect(projectInfo.name).to.not.be.empty;
     chai.expect(projectInfo.code).to.not.be.empty;
   });
