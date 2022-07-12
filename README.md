@@ -12,20 +12,4 @@ Contains the __@itwin/projects-client__ package that wraps sending requests to t
 
 ## Running Tests
 
-In order to run the integration tests, first add a `.env` file containing valid values for:
-
-```Typescript
-#  Dev:"dev-", QA:"qa-", Prod: ""
-IMJS_URL_PREFIX=
-
-#  ** Regular **
-IMJS_TEST_REGULAR_USER_NAME=
-IMJS_TEST_REGULAR_USER_PASSWORD=
-
-# ** Browser test oidc client registration with auth code flow **
-IMJS_OIDC_BROWSER_TEST_CLIENT_ID=
-IMJS_OIDC_BROWSER_TEST_REDIRECT_URI=
-IMJS_OIDC_BROWSER_TEST_SCOPES=
-```
-
-Once the config values are added run `npm install`, `npm run build`, and `npm run test` to execute the integration tests.
+In order to run the integration tests, first add a `.env` file with the necessary settings, then run `npm install`, `npm run build`, and `npm run test`.
