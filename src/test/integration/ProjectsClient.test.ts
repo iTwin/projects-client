@@ -26,6 +26,22 @@ describe("ProjectsClient", () => {
     chai.expect(projectList).to.not.be.empty;
   });
 
+  it("should get project details from projectId", async () => {
+    const projectList: Project[] = await projectsAccessClient.getAll(accessToken,
+      {
+        pagination: {
+          top: 1,
+        },
+      });
+
+    chai.assert(projectList.length >= 0, "Could not find projects");
+
+    const projectInfo: Project = await projectsAccessClient.getByProjectId(accessToken, projectList[0].id);
+
+    chai.assert(projectInfo.name === projectList[0].name, "Invalid project name");
+    chai.assert(projectInfo.code === projectList[0].code, "Inavlid project code");
+  });
+
   it("should get a paged list of projects using top", async () => {
     const numberOfProjects = 3;
 

@@ -9,3 +9,7 @@ If you have questions, or wish to contribute to iTwin.js, see our [Contributing 
 ## About this Repository
 
 Contains the __@itwin/projects-client__ package that wraps sending requests to the project service. Visit the [Projects API](https://developer.bentley.com/apis/projects/) for more documentation on the project service.
+
+## Running Tests
+
+In order to run the integration tests, first add a `.env` file with the necessary settings, then run `npm install`, `npm run build`, and `npm run test`.
