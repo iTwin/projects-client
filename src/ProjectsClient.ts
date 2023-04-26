@@ -16,12 +16,18 @@ import type { Project, ProjectsAccess, ProjectsLinks, ProjectsQueryArg, Projects
 export class ProjectsAccessClient implements ProjectsAccess {
   private _baseUrl: string = "https://api.bentley.com/projects/";
 
-  public constructor() {
-    const urlPrefix = process.env.IMJS_URL_PREFIX;
-    if (urlPrefix) {
-      const baseUrl = new URL(this._baseUrl);
-      baseUrl.hostname = urlPrefix + baseUrl.hostname;
-      this._baseUrl = baseUrl.href;
+  public constructor(baseUrl: string | undefined = undefined) {
+    if (baseUrl !== undefined) {
+      // Mobile apps do not have the ability to put things into process.env at run-time, so relying
+      // on process.env.IMJS_URL_PREFIX does not work there.
+      this._baseUrl = baseUrl;
+    } else {
+      const urlPrefix = process.env.IMJS_URL_PREFIX;
+      if (urlPrefix) {
+        const url = new URL(this._baseUrl);
+        url.hostname = urlPrefix + url.hostname;
+        this._baseUrl = url.href;
+      }
     }
   }
 
