@@ -1,3 +1,7 @@
+# Deprecated
+
+The [Project's API](https://developer.bentley.com/apis/projects/#thisapiisbeingdeprecated) has been deprecated in favor of the [iTwins API](https://developer.bentley.com/apis/itwins/). As such, this package has been deprecated in favor of the [@itwin/itwins-client](https://github.com/itwin/itwins-client) package.
+
 # Projects Client Library
 
 Copyright © Bentley Systems, Incorporated. All rights reserved. See [LICENSE.md](./LICENSE.md) for license terms and full copyright notice.
@@ -8,7 +12,7 @@ If you have questions, or wish to contribute to iTwin.js, see our [Contributing 
 
 ## About this Repository
 
-Contains the __@itwin/projects-client__ package that wraps sending requests to the project service. Visit the [Projects API](https://developer.bentley.com/apis/projects/) for more documentation on the project service.
+Contains the **@itwin/projects-client** package that wraps sending requests to the project service. Visit the [Projects API](https://developer.bentley.com/apis/projects/) for more documentation on the project service.
 
 ## Running Tests
 
